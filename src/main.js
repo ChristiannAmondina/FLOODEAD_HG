@@ -18,6 +18,29 @@ import {
 //================================================================
 // Scene Setup
 //================================================================
+
+// Define boundary limits for player movement
+const boundaryMinX = -50; // Minimum X boundary
+const boundaryMaxX = 50;  // Maximum X boundary
+const boundaryMinY = 0;   // Minimum Y boundary (ground level)
+const boundaryMaxY = 20;  // Maximum Y boundary (height limit)
+const boundaryMinZ = -50; // Minimum Z boundary
+const boundaryMaxZ = 50;  // Maximum Z boundary
+
+function checkPlayerBounds(playerPosition) {
+  if (playerPosition.x < boundaryMinX || playerPosition.x > boundaryMaxX ||
+      playerPosition.y < boundaryMinY || playerPosition.y > boundaryMaxY ||
+      playerPosition.z < boundaryMinZ || playerPosition.z > boundaryMaxZ) {
+    resetPlayerPosition();
+  }
+}
+
+function resetPlayerPosition() {
+  // Set the player's position to a safe location
+  camera.position.set(0, 5, 0); // Example reset position
+  console.log("You have been reset to a safe location!"); // Console message
+}
+
 const scene = new THREE.Scene();
 //scene.background = new THREE.Color(0x2f303d); // Default background color
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -89,25 +112,17 @@ scene.add(localizedDirectionalLight.target);
 
 
 
+
 //================================================================
-// Sound Setup with Auto-Play on Load
+// Sound Setup with Auto-Play Attempt
 //================================================================
-let audioContext;
+// Initialize Audio Context and play audio automatically on page load
+let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-window.addEventListener('load', function() {
-  // Initialize AudioContext if it doesn't exist
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
-  // Resume the AudioContext if it's suspended
-  if (audioContext.state === 'suspended') {
-    audioContext.resume();
-  }
-
-  // Now you can safely start playing audio
-  playAudio();
-});
+// Resume the AudioContext if it's suspended
+if (audioContext.state === 'suspended') {
+  audioContext.resume();
+}
 
 // Function to play three audio files at once, looping indefinitely
 function playAudio() {
@@ -129,6 +144,9 @@ function playAudio() {
   audio2.play().catch(error => console.error('Error playing audio2:', error));
   audio3.play().catch(error => console.error('Error playing audio3:', error));
 }
+
+// Call playAudio immediately after setting up the audio context
+playAudio();
 
 
 
@@ -680,8 +698,8 @@ class FPSControls {
       document.addEventListener('click', () => this.pointerLockControls.lock());
 
       this.velocity = new THREE.Vector3(0, 0, 0);
-      this.acceleration = new THREE.Vector3(40, 2130, 40);
-      this.deceleration = new THREE.Vector3(-10, -55, -10);
+      this.acceleration = new THREE.Vector3(40, 2130, 40); //speed sa player 
+      this.deceleration = new THREE.Vector3(-10, -55, -10); 
       this.move = { forward: false, backward: false, left: false, right: false };
       this.isStanding = true;
       this.isEditMode = false; // Track whether we are in edit mode
@@ -2124,6 +2142,9 @@ function animate() {
   zombieFollowPlayer(); // Ensure the zombie follows the player
   
   const playerPosition = camera.position;
+
+  checkPlayerBounds(playerPosition);
+  
   checkProximityToKey(playerPosition);
   checkProximityToDoor(playerPosition);
 
