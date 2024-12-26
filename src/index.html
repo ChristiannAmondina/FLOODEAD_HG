@@ -27,6 +27,7 @@
             z-index: 10;
         }
         button {
+            display: none;
             background-color: #333;
             color: white;
             border: none;
@@ -135,8 +136,9 @@
 
     <!-- Game Mode Controls -->
     <div id="controls">
-        <button id="firstPersonBtn" class="control-btn" style="display: none;">Enter First Person Mode</button>
-        <button id="editModeBtn" class="control-btn">Edit Mode</button>
+        <button id="firstPersonBtn">Enter First Person Mode</button>
+        <button id="editModeBtn">Enter Edit Mode</button>
+        
     </div>
 
     <!-- Damage Overlay (Visible when the player takes damage) -->
@@ -158,7 +160,6 @@
     <div class="inventory2">
         <img src="./images/pics/candleinventory.png" alt="">
     </div>
-   
 
     <!-- External JavaScript -->
     <script src="/main.js" type="module"></script>
