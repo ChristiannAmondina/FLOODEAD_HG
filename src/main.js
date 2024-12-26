@@ -89,17 +89,16 @@ scene.add(localizedDirectionalLight.target);
 
 
 
+
 //================================================================
-// Sound Setup with Auto-Play on Load
+// Sound Setup with Auto-Play Attempt
 //================================================================
 let audioContext;
 
-window.addEventListener('load', function() {
-  // Initialize AudioContext if it doesn't exist
+document.addEventListener('click', function() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
-
   // Resume the AudioContext if it's suspended
   if (audioContext.state === 'suspended') {
     audioContext.resume();
@@ -129,6 +128,12 @@ function playAudio() {
   audio2.play().catch(error => console.error('Error playing audio2:', error));
   audio3.play().catch(error => console.error('Error playing audio3:', error));
 }
+
+// Example button to trigger audio playback
+const playButton = document.createElement('button');
+playButton.textContent = 'Play Audio';
+playButton.onclick = playAudio;
+document.body.appendChild(playButton);
 
 
 
@@ -2151,7 +2156,7 @@ createChair(scene);
     created_nearstatue(scene);
     
     created_ceiling(scene);
-    created_statue(scene);
+    created_statue(scene)
     
     created_fallingceiling(scene);
   
