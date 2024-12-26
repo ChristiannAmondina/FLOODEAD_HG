@@ -11,9 +11,10 @@ export function createChair(scene) {
             '/images/models/day_20__old_office_chair.glb', // Path to your .glb model
             (gltf) => {
                 const chair = gltf.scene;
-                chair.position.set(-38, 4, -34); // Set chair position
+                chair.position.set(40, 2, -42); // Set chair position
                 chair.scale.set(7,5,5); // Set scale
-                chair.rotation.y = Math.PI / -2;
+                chair.rotation.x = Math.PI / 4; // Tilt backward (30 degrees)
+                chair.rotation.z = -Math.PI / 1.9; // Tilt sideways (45 degrees)
 
                 chair.castShadow = true; // Ensure the chair casts shadows
                 chair.receiveShadow = true; // Ensure the chair receives shadows
@@ -277,8 +278,8 @@ export function created_cheaproom(scene) {
             '/images/models/low_poly_90s_office_cubicle.glb', 
             (gltf) => {
                 const cheaproom = gltf.scene;
-                cheaproom.position.set(39, -1, 10); 
-                cheaproom.scale.set(8,6,8); 
+                cheaproom.position.set(39, -1, 6.2); 
+                cheaproom.scale.set(9,6,9); 
                 cheaproom.rotation.y = Math.PI/2;
                 cheaproom.castShadow = true; 
                 cheaproom.receiveShadow = true;
@@ -345,8 +346,6 @@ export function created_statue(scene) {
 
 
 
-
-
 export function created_nearstatue(scene) {
     return new Promise((resolve, reject) => {
         loader.load(
@@ -377,10 +376,19 @@ export function created_ceiling(scene) {
             (gltf) => {
                 const ceiling = gltf.scene;
                 ceiling.position.set(-149, 20, 100); 
-                ceiling.scale.set(2,2,2); 
-                ceiling.rotation.y = Math.PI/2;
+                ceiling.scale.set(2, 2, 2); 
+                ceiling.rotation.y = Math.PI / 2;
                 ceiling.castShadow = true; 
                 ceiling.receiveShadow = true;
+
+                // Iterate through all materials and set roughness to 0
+                ceiling.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = child.material.clone(); // Clone material to avoid modifying the original material
+                        child.material.roughness = 0;  // Set roughness to 0 for shiny appearance
+                    }
+                });
+
                 scene.add(ceiling); 
                 resolve(ceiling); 
             },
@@ -392,3 +400,35 @@ export function created_ceiling(scene) {
         );
     });
 }
+export function created_fallingceiling(scene) {
+    return new Promise((resolve, reject) => {
+        loader.load(
+            'images/models/abandoned_office_ceiling.glb', 
+            (gltf) => {
+                const fallceiling = gltf.scene;
+
+                // Set initial position, scale, and base rotation
+                fallceiling.position.set(-27, -16.3, 54); 
+                fallceiling.scale.set(1, 12, 1); 
+                fallceiling.rotation.y = Math.PI / 2; // Initial Y-axis rotation (90 degrees)
+
+                // Tilt the model slightly side by side (roll rotation)
+                fallceiling.rotation.z = Math.PI / 8; // Tilt by 10 degrees
+
+                // Enable shadows
+                fallceiling.castShadow = true; 
+                fallceiling.receiveShadow = true;
+
+                // Add to the scene
+                scene.add(fallceiling); 
+                resolve(fallceiling); 
+            },
+            undefined, 
+            (error) => { 
+                console.error('Error loading fallceiling model:', error); 
+                reject(error); 
+            }
+        );
+    });
+}
+
